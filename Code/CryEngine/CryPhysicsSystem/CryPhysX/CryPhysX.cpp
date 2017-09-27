@@ -222,13 +222,10 @@ namespace cpx // CryPhysX helper
 			// and now try to connect
 			m_Pvd->connect(*m_PvdTransport, PxPvdInstrumentationFlag::eALL);
 
-			if (m_Pvd->isConnected()) {
+			if (m_Pvd->isConnected()) 
+			{
 				Helper::Log("PhysX Visual Debugger Connection - initialized.\n");
-				PxPvdSceneClient* pvdSceneClient = m_Scene->getScenePvdClient();
-				if (pvdSceneClient)
-				{
-					pvdSceneClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
-				}
+				m_Scene->getScenePvdClient()->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONSTRAINTS, true);
 			}
 		}
 #endif
