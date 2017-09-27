@@ -260,7 +260,7 @@ namespace cpx // CryPhysX helper
 	{
 		// shutdown PhysX
 		if (m_PvdTransport) m_PvdTransport->release();
-		if (m_Pvd) m_Pvd->release();
+		m_Pvd->release();
 		PxCloseVehicleSDK();
 		m_Scene->release();
 		m_Physics->release();
