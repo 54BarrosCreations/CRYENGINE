@@ -540,5 +540,8 @@ bool CTerrain::OpenTerrainTextureFile(SCommonFileHeader& hdrDiffTexHdr, STerrain
 	m_texCache[1].InitPool(0, m_arrBaseTexInfos[nSID].m_TerrainTextureLayer[1].nSectorSizePixels, eTexPoolFormat);
 	m_texCache[2].InitPool(0, nSectorHeightMapTextureDim, eTF_R32F);
 
+	// init heightfield physics for new data
+	InitHeightfieldPhysics(0);
+
 	return true;
 }
