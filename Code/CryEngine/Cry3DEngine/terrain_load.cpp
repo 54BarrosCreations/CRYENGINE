@@ -77,7 +77,7 @@ CTerrain::CTerrain(const STerrainInfo& TerrainInfo)
 		float f = (float) GetTerrainSize();
 		CreateSegment(Vec3(f, f, f));
 	}
-	InitHeightfieldPhysics(0);
+	//InitHeightfieldPhysics(0);
 
 	if (GetRenderer())
 	{

@@ -531,7 +531,7 @@ bool CTerrain::Load_T(T*& f, int& nDataSize, STerrainChunkHeader* pTerrainChunkH
 		BuildSectorsTree(false, nSID);
 
 		// pass heightmap to the physics
-		InitHeightfieldPhysics(nSID);
+//		InitHeightfieldPhysics(nSID);
 	}
 
 	// setup physics grid
@@ -807,6 +807,8 @@ bool CTerrain::Load(FILE* f, int nDataSize, STerrainChunkHeader* pTerrainChunkHe
 			OpenTerrainTextureFile(m_arrBaseTexInfos[nSID].m_hdrDiffTexHdr, m_arrBaseTexInfos[nSID].m_hdrDiffTexInfo,
 			                       COMPILED_TERRAIN_TEXTURE_FILE_NAME, m_arrBaseTexInfos[nSID].m_ucpDiffTexTmpBuffer, m_arrBaseTexInfos[nSID].m_nDiffTexIndexTableSize, nSID);
 	}
+
+	InitHeightfieldPhysics(0);
 
 	return bRes;
 }
