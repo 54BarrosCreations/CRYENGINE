@@ -665,7 +665,10 @@ void PhysXWorld::TimeStep(float dt, int flags)
 		m_addEntList[1] = m_addEntList[0] = ListStart(m_addEntList);
 	}
 	{ WriteLockScene lock;
-		for(; pentAdd; pentAdd=pentAdd->AddToScene(true));
+		while (pentAdd) 
+		{
+			pentAdd = pentAdd->AddToScene(true);
+		}
 	}
 
 	if (flags & ent_rigid && (!m_vars.bSingleStepMode || m_vars.bDoStep)) {
