@@ -42,11 +42,13 @@ namespace cpx // CryPhysX
 		physx::PxPhysics* Physics() { return m_Physics; }
 		physx::PxScene* Scene() { return m_Scene; }
 		physx::PxCooking* Cooking() { return m_Cooking; }
-		float dt() { return m_dt; }
+		float& dt() { return m_dt; }
 
 		void Init();
 		void SceneClear(); //<! removes all entities from scene
 		void SceneResetDynamicEntities();
+		void ConnectPhysicsDebugger();
+		void DisconnectPhysicsDebugger();
 
 		void SetDebugVisualizationForAllSceneElements(bool enable = true);
 
@@ -55,12 +57,13 @@ namespace cpx // CryPhysX
 		float                             m_dt;
 
 		physx::PxPhysics*                 m_Physics;
+		physx::PxDefaultCpuDispatcher*    m_Dispatcher;
 		physx::PxFoundation*              m_Foundation;
 		physx::PxScene*                   m_Scene;
 		physx::PxCooking*                 m_Cooking;
+
 		physx::PxPvd*                     m_Pvd;
 		physx::PxPvdTransport*            m_PvdTransport; //!< Debugger Connection to PhysX
-		physx::PxDefaultCpuDispatcher*    m_CpuDispatcher;
 
 		bool m_DebugVisualizationForAllSceneElements;
 
@@ -95,4 +98,9 @@ namespace cpx {
 		};
 	}
 }
+
+#define isRigidBody is<PxRigidBody>
+#define isRigidDynamic is<PxRigidDynamic>
+#define isRigidActor is<PxRigidActor>
+
 

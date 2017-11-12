@@ -30,6 +30,7 @@ IPhysicalEntity* PhysXWorld::SetupEntityGrid(int axisz, Vec3 org, int nx, int ny
 	return nullptr;
 }
 
+
 IPhysicalEntity *PhysXWorld::SetHeightfieldData(const heightfield *phf, int *pMatMapping, int nMats)
 {
 	delete m_phf;	m_phf=nullptr;
@@ -450,6 +451,18 @@ float PhysXWorld::PrimitiveWorldIntersection(const SPWIParams& pp, WriteLockCond
 	return dist;
 }
 
+void PhysXWorld::SetPhysicsStreamer(IPhysicsStreamer * pStreamer)
+{
+	if (pStreamer) 
+	{
+		g_cryPhysX.ConnectPhysicsDebugger();
+	}
+	else
+	{
+		g_cryPhysX.DisconnectPhysicsDebugger();
+	}
+}
+
 int PhysXWorld::CollideEntityWithPrimitive(IPhysicalEntity* _pent, int itype, primitives::primitive* pprim, Vec3 dir, ray_hit* phit, intersection_params* pip)
 {
 	SPWIParams pp;
@@ -528,7 +541,7 @@ int PhysXWorld::GetEntitiesInBox(Vec3 ptmin, Vec3 ptmax, IPhysicalEntity**& pLis
 			pList = (IPhysicalEntity**)&m_entList[0];
 	if (objtypes & ent_sort_by_mass)
 		std::qsort(pListSrc, filter.nEnts, sizeof(void*), [](const void *pent0,const void *pent1)->int { 
-			PxRigidBody *body0 = (*(PhysXEnt**)pent0)->m_actor->is<PxRigidBody>(), *body1 = (*(PhysXEnt**)pent1)->m_actor->is<PxRigidBody>();
+			PxRigidBody *body0 = (*(PhysXEnt**)pent0)->m_actor->isRigidBody(), *body1 = (*(PhysXEnt**)pent1)->m_actor->isRigidBody();
 			return sgn((body1 ? body1->getInvMass():0.0f) - (body0 ? body0->getInvMass():0.0f));
 		});
 	for(int i=0; i<filter.nEnts; i++) 
@@ -624,7 +637,7 @@ void PhysXWorld::onContact(const PxContactPairHeader& pairHeader, const PxContac
 			epc.pEntity[j] = (pent[j] = Ent(pairs[i].shapes[j]->getActor()));
 			epc.pForeignData[j] = pent[j]->m_pForeignData;
 			epc.iForeignData[j] = pent[j]->m_iForeignData;
-			if (PxRigidBody *pRB = pairs[i].shapes[j]->getActor()->is<PxRigidBody>()) {
+			if (PxRigidBody *pRB = pairs[i].shapes[j]->getActor()->isRigidBody()) {
 				epc.mass[j] = pRB->getMass();
 				Vec3 com = T(pRB->getGlobalPose())*V(pRB->getCMassLocalPose().p);
 				epc.vloc[j] = v[j] + (w[j] ^ epc.pt-com);
@@ -653,8 +666,10 @@ void PhysXWorld::TimeStep(float dt, int flags)
 	//if (!m_dt && dt)
 	//	g_cpx.Scene()->forceDynamicTreeRebuild(true,true);
 	m_time += dt;
-	if (m_vars.fixedTimestep>0)
-		dt = m_vars.fixedTimestep;
+	if (m_vars.fixedTimestep>0 && dt>0)	{
+		g_cryPhysX.dt() = dt = m_vars.fixedTimestep;
+		m_dtSurplus = 0;
+	}
 	m_vars.lastTimeStep = m_dt = dt;
 	g_cryPhysX.Scene()->setBounceThresholdVelocity(m_vars.minBounceSpeed);
 
@@ -665,7 +680,7 @@ void PhysXWorld::TimeStep(float dt, int flags)
 		m_addEntList[1] = m_addEntList[0] = ListStart(m_addEntList);
 	}
 	{ WriteLockScene lock;
-		while (pentAdd) 
+		while (pentAdd)
 		{
 			pentAdd = pentAdd->AddToScene(true);
 		}
@@ -673,7 +688,7 @@ void PhysXWorld::TimeStep(float dt, int flags)
 
 	if (flags & ent_rigid && (!m_vars.bSingleStepMode || m_vars.bDoStep)) {
 		float dtFixed = g_cryPhysX.dt();
-		for(int i=0; m_dtSurplus+dt>dtFixed && i<m_vars.nMaxSubsteps; dt-=dtFixed,i++)	{
+		for(int i=0; m_dtSurplus+dt>=dtFixed && i<m_vars.nMaxSubsteps; dt-=dtFixed,i++)	{
 			g_cryPhysX.Scene()->simulate(dtFixed,0,m_scratchBuf.data(),m_scratchBuf.size());
 			WriteLockScene lockScene;
 			{ WriteLock lock(m_lockCollEvents); 
@@ -722,7 +737,6 @@ void PhysXWorld::TimeStep(float dt, int flags)
 		//if (PhysXEnt* player = (PhysXEnt*)GetPhysicalEntityById(0x7777))
 		//	player->m_actor->setActorFlag(PxActorFlag::eVISUALIZATION, false);//!player->m_actor->getWorldBounds().contains(V(cam.GetPosition())));
 	}
-
 	if (m_renderer && m_vars.bMultithreaded)
 		DrawPhysicsHelperInformation(m_renderer, 0);
 }

@@ -242,8 +242,8 @@ int PhysXArticulation::SetParams(pe_params* _params, int bThreadSafe)
 					m_hostAttach->setConstraintFlag(PxConstraintFlag::ePROJECTION, true);
 					m_hostAttach->setConstraintFlag(PxConstraintFlag::eCOLLISION_ENABLED, false);
 					m_hostAttach->setInvMassScale0(0);
-					m_actor->is<PxRigidDynamic>()->setSleepThreshold(0);
-					m_actor->is<PxRigidDynamic>()->wakeUp();
+					m_actor->isRigidDynamic()->setSleepThreshold(0);
+					m_actor->isRigidDynamic()->wakeUp();
 				}	else {
 					if (!is_unused(params->pHost)) m_hostAttach->setActors(host,m_actor);
 					m_hostAttach->setLocalPose(PxJointActorIndex::eACTOR0, T(pose));
