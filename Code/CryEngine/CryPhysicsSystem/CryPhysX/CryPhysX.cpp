@@ -331,7 +331,7 @@ namespace cpx // CryPhysX helper
 
 		if (m_Pvd->isConnected())
 		{
-			Helper::Log("PhysX Visual Debugger Connection - initialized.\n");
+			Helper::Log("PhysX Visual Debugger Connection - connected.\n");
 		}
 #endif
 	}
@@ -342,6 +342,7 @@ namespace cpx // CryPhysX helper
 		if (m_Pvd->isConnected())
 		{
 			m_Pvd->disconnect();
+			Helper::Log("PhysX Visual Debugger Connection - disconnected.\n");
 		}
 #endif
 	}
