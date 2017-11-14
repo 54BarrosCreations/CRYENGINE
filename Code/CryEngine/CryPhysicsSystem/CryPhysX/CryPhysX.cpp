@@ -203,7 +203,9 @@ namespace cpx // CryPhysX helper
  													// consoles and remote PCs need a higher timeout.
 			m_PvdTransport = PxDefaultPvdSocketTransportCreate(pvd_host_ip, port, timeout);
 			if (!m_PvdTransport)
+			{
  				fatalError("PxDefaultPvdSocketTransportCreate failed!");
+			}
 		}
 #endif
 
@@ -327,11 +329,13 @@ namespace cpx // CryPhysX helper
 	void CryPhysX::ConnectPhysicsDebugger()
 	{
 #if defined(USE_PHYSX_VISUALDEBUGGER)
-		m_Pvd->connect(*m_PvdTransport, PxPvdInstrumentationFlag::eALL);
-
-		if (m_Pvd->isConnected())
+		if (!m_Pvd->isConnected())
 		{
-			Helper::Log("PhysX Visual Debugger Connection - connected.\n");
+			m_Pvd->connect(*m_PvdTransport, PxPvdInstrumentationFlag::eALL);
+			if (m_Pvd->isConnected())
+			{
+				Helper::Log("PhysX Visual Debugger Connection - connected.\n");
+			}
 		}
 #endif
 	}
