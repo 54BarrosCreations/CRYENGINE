@@ -117,7 +117,7 @@ public:
 	virtual float PrimitiveWorldIntersection(const SPWIParams& pp, WriteLockCond* pLockContacts = 0, const char* pNameTag = PWI_NAME_TAG);
 	virtual void  GetMemoryStatistics(ICrySizer* pSizer) { CRY_PHYSX_LOG_FUNCTION; }
 
-	virtual void  SetPhysicsStreamer(IPhysicsStreamer* pStreamer);
+	virtual void  SetPhysicsStreamer(IPhysicsStreamer* pStreamer) { CRY_PHYSX_LOG_FUNCTION; }
 	virtual void  SetPhysicsEventClient(IPhysicsEventClient* pEventClient) { CRY_PHYSX_LOG_FUNCTION; }
 	virtual float GetLastEntityUpdateTime(IPhysicalEntity* pent) { CRY_PHYSX_LOG_FUNCTION; _RETURN_FLOAT_DUMMY_; } //!< simulation class-based, not actually per-entity
 	virtual int   GetEntityProfileInfo(phys_profile_info*& pList) { CRY_PHYSX_LOG_FUNCTION; _RETURN_INT_DUMMY_; }

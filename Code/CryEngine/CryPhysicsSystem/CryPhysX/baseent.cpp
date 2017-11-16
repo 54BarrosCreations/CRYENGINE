@@ -134,8 +134,8 @@ PhysXEnt* PhysXEnt::AddToScene(bool fromList)
 	PhysXEnt *next = m_list[1];
 	if (fromList)
 		m_list[0] = m_list[1] = this;
-	Enable(!(m_mask & 1 << 5));
-	_InterlockedAnd((volatile long*)&m_mask, ~(1u << 31 | 1 << 5));
+	Enable(!(m_mask & 1<<5));
+	_InterlockedAnd((volatile long*)&m_mask, ~(1u<<31 | 1<<5));
 	return next;
 }
 

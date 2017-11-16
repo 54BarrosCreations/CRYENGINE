@@ -47,24 +47,22 @@ namespace cpx // CryPhysX
 		void Init();
 		void SceneClear(); //<! removes all entities from scene
 		void SceneResetDynamicEntities();
-		void ConnectPhysicsDebugger();
-		void DisconnectPhysicsDebugger();
 
 		void SetDebugVisualizationForAllSceneElements(bool enable = true);
+		void DisconnectPhysicsDebugger();
 
 	private:
 
 		float                             m_dt;
 
 		physx::PxPhysics*                 m_Physics;
-		physx::PxDefaultCpuDispatcher*    m_Dispatcher;
+		physx::PxDefaultCpuDispatcher*    m_CpuDispatcher;
 		physx::PxFoundation*              m_Foundation;
 		physx::PxScene*                   m_Scene;
 		physx::PxCooking*                 m_Cooking;
 
 		physx::PxPvd*                     m_Pvd;
 		physx::PxPvdTransport*            m_PvdTransport; //!< Debugger Connection to PhysX
-
 		bool m_DebugVisualizationForAllSceneElements;
 
 		PxDefaultErrorCallback m_DefaultErrorCallback;

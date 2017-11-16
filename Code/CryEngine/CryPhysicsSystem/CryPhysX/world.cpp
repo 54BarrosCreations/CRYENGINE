@@ -30,7 +30,6 @@ IPhysicalEntity* PhysXWorld::SetupEntityGrid(int axisz, Vec3 org, int nx, int ny
 	return nullptr;
 }
 
-
 IPhysicalEntity *PhysXWorld::SetHeightfieldData(const heightfield *phf, int *pMatMapping, int nMats)
 {
 	delete m_phf;	m_phf=nullptr;
@@ -451,18 +450,6 @@ float PhysXWorld::PrimitiveWorldIntersection(const SPWIParams& pp, WriteLockCond
 	return dist;
 }
 
-void PhysXWorld::SetPhysicsStreamer(IPhysicsStreamer * pStreamer)
-{
-	if (pStreamer) 
-	{
-		g_cryPhysX.ConnectPhysicsDebugger();
-	}
-	else
-	{
-		g_cryPhysX.DisconnectPhysicsDebugger();
-	}
-}
-
 int PhysXWorld::CollideEntityWithPrimitive(IPhysicalEntity* _pent, int itype, primitives::primitive* pprim, Vec3 dir, ray_hit* phit, intersection_params* pip)
 {
 	SPWIParams pp;
@@ -680,10 +667,7 @@ void PhysXWorld::TimeStep(float dt, int flags)
 		m_addEntList[1] = m_addEntList[0] = ListStart(m_addEntList);
 	}
 	{ WriteLockScene lock;
-		while (pentAdd)
-		{
-			pentAdd = pentAdd->AddToScene(true);
-		}
+		for(; pentAdd; pentAdd=pentAdd->AddToScene(true));
 	}
 
 	if (flags & ent_rigid && (!m_vars.bSingleStepMode || m_vars.bDoStep)) {
