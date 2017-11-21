@@ -81,6 +81,7 @@ public:
 	{
 		IInput* pInput = m_pInput;
 		XINPUT_CAPABILITIES caps;
+		CoInitialize(NULL);
 
 		while (!m_bQuit)
 		{
@@ -93,6 +94,7 @@ public:
 			}
 			Sleep(1000);
 		}
+		CoUninitialize();
 	}
 };
 
