@@ -1,3 +1,4 @@
+.gitignore
 # Asset files.
 *.pak
 *.caf
@@ -38,3 +39,22 @@ __pycache__/*
 
 # These are handled elsewhere.
 /Code/SDKs/*
+Templates/*
+Tools/*
+Engine/*
+cryengine.cryengine
+Editor/*
+Code/Libs/*
+Code/Launcher/*
+*.vcxproj
+*.vcxproj.filters
+*.sln
+*.ico
+*.manifest
+*_uber*
+*.rc
+*.cmake
+*CMakeFiles*
+*.orig
+Engine/*
+*_CBuffer.cpp
