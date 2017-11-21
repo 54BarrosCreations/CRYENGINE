@@ -647,7 +647,6 @@ void PhysXWorld::UpdateProjectileState(PhysXProjectile *pent)
 	Insert(pent, m_projectilesList[active], active^1);
 }
 
-
 void PhysXWorld::TimeStep(float dt, int flags)
 {
 	//if (!m_dt && dt)
@@ -673,6 +672,8 @@ void PhysXWorld::TimeStep(float dt, int flags)
 	if (flags & ent_rigid && (!m_vars.bSingleStepMode || m_vars.bDoStep)) {
 		float dtFixed = g_cryPhysX.dt();
 		for(int i=0; m_dtSurplus+dt>=dtFixed && i<m_vars.nMaxSubsteps; dt-=dtFixed,i++)	{
+			EventPhysPreStep epps;
+			SendEvent(epps, 0);
 			g_cryPhysX.Scene()->simulate(dtFixed,0,m_scratchBuf.data(),m_scratchBuf.size());
 			WriteLockScene lockScene;
 			{ WriteLock lock(m_lockCollEvents); 

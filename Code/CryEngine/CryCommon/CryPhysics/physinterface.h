@@ -3170,7 +3170,13 @@ struct EventPhysPostPump : EventPhys
 	EventPhysPostPump() {}
 };
 
-const int EVENT_TYPES_NUM = 16;
+struct EventPhysPreStep : EventPhysMono
+{
+	enum entype { id = 16, flagsCall = 0, flagsLog = 0 };
+	EventPhysPreStep() { idval = id; }
+};
+
+const int EVENT_TYPES_NUM = 17;
 
 //! Physical entity iterator interface. This interface is used to traverse trough all the physical entities in an physical world.
 //! In a way, this iterator works a lot like a stl iterator.
