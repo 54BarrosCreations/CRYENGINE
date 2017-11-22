@@ -216,7 +216,7 @@ CActionGame::CActionGame(CScriptRMI* pScriptRMI)
 	, m_pPhysicalWorld(0)
 	, m_pGameStats(0)
 	, m_pEntHits0(0)
-	, m_pCHSlotPool(0)
+//	, m_pCHSlotPool(0)
 	, m_lastDynPoolSize(0)
 #ifndef _RELEASE
 	, m_timeToPromoteToServer(0.f)
@@ -352,8 +352,8 @@ void CActionGame::UnloadPhysicsData()
 	FixBrokenObjects(false);
 	ClearBreakHistory();
 
-	delete[] m_pCHSlotPool;
-	m_pCHSlotPool = m_pFreeCHSlot0 = 0;
+//	delete[] m_pCHSlotPool;
+//	m_pCHSlotPool = m_pFreeCHSlot0 = 0;
 
 	SEntityHits* phits, * phitsPool;
 	int i;
@@ -580,12 +580,12 @@ bool CActionGame::Init(const SGameStartParams* pGameStartParams)
 	}
 
 	m_pPhysicalWorld = gEnv->pPhysicalWorld;
-	m_pFreeCHSlot0 = m_pCHSlotPool = new SEntityCollHist[32];
 	int i;
+	/*	m_pFreeCHSlot0 = m_pCHSlotPool = new SEntityCollHist[32];
 	for (i = 0; i < 31; i++)
 		m_pCHSlotPool[i].pnext = m_pCHSlotPool + i + 1;
 	m_pCHSlotPool[i].pnext = m_pCHSlotPool;
-
+*/
 	m_pEntHits0 = new SEntityHits[32];
 	for (i = 0; i < 32; i++)
 	{
@@ -2776,7 +2776,7 @@ void CActionGame::OnCollisionLogged_MaterialFX(const EventPhys* pEvent)
 	bool backface = (pCEvent->n.Dot(vloc0) >= 0.0f);
 
 	// track contacts info for physics sounds generation
-	Vec3 vrel, r;
+/*  Vec3 vrel, r;
 	float velImpact, velSlide2, velRoll2;
 	int iop, id, i;
 	SEntityCollHist* pech = 0;
@@ -2797,7 +2797,6 @@ void CActionGame::OnCollisionLogged_MaterialFX(const EventPhys* pEvent)
 		pech->mass = 0;
 		s_this->m_mapECH.insert(std::pair<int, SEntityCollHist*>(id, pech));
 	}
-
 	pe_status_dynamics sd;
 	if (pech && pCEvent->pEntity[iop]->GetStatus(&sd))
 	{
@@ -2825,6 +2824,7 @@ void CActionGame::OnCollisionLogged_MaterialFX(const EventPhys* pEvent)
 		pech->imatSlide[1] += pCEvent->idmat[iop ^ 1] - pech->imatRoll[1] & - i;
 		pech->velRoll2 += (velRoll2 - pech->velRoll2) * i;
 	}
+	*/
 	// --- Begin Material Effects Code ---
 	// Relative velocity, adjusted to be between 0 and 1 for sound effect parameters.
 	const int debug = CMaterialEffectsCVars::Get().mfx_Debug & 0x1;
@@ -3223,19 +3223,20 @@ int CActionGame::OnPostStepLogged(const EventPhys* pEvent)
 		pSrc->SendEvent(event);
 	}
 
-	OnPostStepLogged_MaterialFX(pEvent);
+//	OnPostStepLogged_MaterialFX(pEvent);
 
 	return 1;
 }
-
+/*
 void CActionGame::OnPostStepLogged_MaterialFX(const EventPhys* pEvent)
 {
+	
 	FUNCTION_PROFILER(GetISystem(), PROFILE_ACTION);
 
 	const EventPhysPostStep* pPSEvent = (const EventPhysPostStep*) pEvent;
 	const float maxSoundDist = 30.0f;
 	Vec3 pos0 = CCryAction::GetCryAction()->GetISystem()->GetViewCamera().GetPosition();
-
+	
 	if ((pPSEvent->pos - pos0).len2() < sqr(maxSoundDist * 1.4f))
 	{
 		int id = s_this->m_pPhysicalWorld->GetPhysicalEntityId(pPSEvent->pEntity);
@@ -3301,8 +3302,8 @@ void CActionGame::OnPostStepLogged_MaterialFX(const EventPhys* pEvent)
 				s_this->m_pFreeCHSlot0->pnext = pech;
 			}
 		}
-	}
-}
+	}	
+}*/
 
 int CActionGame::OnStateChangeLogged(const EventPhys* pEvent)
 {
@@ -3331,11 +3332,11 @@ int CActionGame::OnStateChangeLogged(const EventPhys* pEvent)
 		pSrc->SendEvent(event);
 	}
 
-	OnStateChangeLogged_MaterialFX(pEvent);
+//	OnStateChangeLogged_MaterialFX(pEvent);
 
 	return 1;
 }
-
+/*
 void CActionGame::OnStateChangeLogged_MaterialFX(const EventPhys* pEvent)
 {
 	FUNCTION_PROFILER(GetISystem(), PROFILE_ACTION);
@@ -3356,7 +3357,7 @@ void CActionGame::OnStateChangeLogged_MaterialFX(const EventPhys* pEvent)
 			s_this->m_mapECH.erase(iter);
 		}
 	}
-}
+}*/
 
 int CActionGame::OnCreatePhysicalEntityLogged(const EventPhys* pEvent)
 {
@@ -5058,7 +5059,7 @@ void CActionGame::GetMemoryUsage(ICrySizer* s) const
 		s->AddObject(m_brokenVegParts);
 		s->AddObject(m_broken2dChunkIds);
 		s->AddObject(m_entPieceIdx);
-		s->AddObject(m_mapECH);
+//		s->AddObject(m_mapECH);
 		s->AddObject(m_mapEntHits);
 		s->AddObject(m_vegStatus);
 		s->AddObject(m_treeStatus);

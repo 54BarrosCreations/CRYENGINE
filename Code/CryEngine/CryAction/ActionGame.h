@@ -171,7 +171,7 @@ struct SBrokenVegPart
 	EntityId idNewEnt;
 };
 
-struct SEntityCollHist
+/*struct SEntityCollHist
 {
 	SEntityCollHist* pnext;
 	float            velImpact, velSlide2, velRoll2;
@@ -180,8 +180,8 @@ struct SEntityCollHist
 	float            rollTimeout, slideTimeout;
 	float            mass;
 
-	void             GetMemoryUsage(ICrySizer* pSizer) const { /*nothing*/ }
-};
+	void             GetMemoryUsage(ICrySizer* pSizer) const { }
+};*/
 
 struct SEntityHits
 {
@@ -382,8 +382,8 @@ private:
 
 	static void  OnCollisionLogged_MaterialFX(const EventPhys* pEvent);
 	static void  OnCollisionLogged_Breakable(const EventPhys* pEvent);
-	static void  OnPostStepLogged_MaterialFX(const EventPhys* pEvent);
-	static void  OnStateChangeLogged_MaterialFX(const EventPhys* pEvent);
+//	static void  OnPostStepLogged_MaterialFX(const EventPhys* pEvent);
+//	static void  OnStateChangeLogged_MaterialFX(const EventPhys* pEvent);
 
 	// IHostMigrationEventListener
 	virtual EHostMigrationReturn OnInitiate(SHostMigrationInfo& hostMigrationInfo, HMStateType& state);
@@ -491,8 +491,8 @@ private:
 
 	CGameStats*                                  m_pGameStats;
 
-	SEntityCollHist*                             m_pCHSlotPool, * m_pFreeCHSlot0;
-	std::map<int, SEntityCollHist*>              m_mapECH;
+//	SEntityCollHist*                             m_pCHSlotPool, * m_pFreeCHSlot0;
+//	std::map<int, SEntityCollHist*>              m_mapECH;
 
 	SEntityHits*                                 m_pEntHits0;
 	std::map<int, SEntityHits*>                  m_mapEntHits;
