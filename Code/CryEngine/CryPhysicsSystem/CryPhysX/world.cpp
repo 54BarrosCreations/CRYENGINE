@@ -669,9 +669,15 @@ void PhysXWorld::TimeStep(float dt, int flags)
 		for(; pentAdd; pentAdd=pentAdd->AddToScene(true));
 	}
 
-	if (flags & ent_rigid && (!m_vars.bSingleStepMode || m_vars.bDoStep)) {
-		float dtFixed = g_cryPhysX.dt();
-		for(int i=0; m_dtSurplus+dt>=dtFixed && i<m_vars.nMaxSubsteps; dt-=dtFixed,i++)	{
+	float dtFixed = g_cryPhysX.dt();
+	if (flags & ent_rigid && (!m_vars.bSingleStepMode || m_vars.bDoStep))
+	{
+		for(int i=0; m_dtSurplus+dt>=dtFixed && i<m_vars.nMaxSubsteps; dt-=dtFixed,i++)
+		{
+			{ ReadLock lock(g_lockEntList);
+				for (PhysXEnt *pent = m_activeEntList[1]; pent != ListStart(m_activeEntList); pent = pent->m_list[1])
+					pent->RestoreCurrentPose();
+			}
 			EventPhysPreStep epps;
 			SendEvent(epps, 0);
 			g_cryPhysX.Scene()->simulate(dtFixed,0,m_scratchBuf.data(),m_scratchBuf.size());
@@ -683,7 +689,10 @@ void PhysXWorld::TimeStep(float dt, int flags)
 			AtomicAdd((volatile uint*)&m_updated, 1);
 			{ ReadLock lock(g_lockEntList);
 				for(PhysXEnt *pent=m_activeEntList[1]; pent!=ListStart(m_activeEntList); pent=pent->m_list[1])
+				{
 					pent->PostStep(dtFixed);
+					pent->m_currentPose = pent->getGlobalPose();
+				}
 				for(PhysXEnt *pent=m_auxEntList[1]; pent!=ListStart(m_auxEntList); pent=pent->m_list[1])
 					pent->PostStep(dtFixed);
 			}
@@ -691,6 +700,11 @@ void PhysXWorld::TimeStep(float dt, int flags)
 		m_dtSurplus += dt;
 		m_dtSurplus = min(dtFixed, m_dtSurplus);
 		m_vars.bDoStep = 0;
+
+		{ ReadLock lock(g_lockEntList);
+			for (PhysXEnt *pent = m_activeEntList[1]; pent != ListStart(m_activeEntList); pent = pent->m_list[1])
+				pent->InterpolateAndMove(m_dtSurplus / dtFixed);
+		}
 
 		{ WriteLock lock(m_lockCollEvents);
 			ReadLock lock1(m_lockEntDelete);

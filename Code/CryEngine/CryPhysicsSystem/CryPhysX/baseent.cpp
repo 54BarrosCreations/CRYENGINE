@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 
+#include <CryEntitySystem/IEntity.h>
 #include "geometries.h"
 #include "entities.h"
 #include "world.h"
@@ -23,6 +24,9 @@ int phys_geometry_refcnt::Release()
 PhysXEnt::PhysXEnt(pe_type type, int id, pe_params *params) : m_type(type), m_id(id)
 {
 	QuatT trans(IDENTITY);
+	m_prevPose.SetIdentity();
+	m_currentPose.SetIdentity();
+	m_lerpPose.SetIdentity();
 	Diag33 scale;
 	if (params && params->type==pe_params_pos::type_id)
 		ExtractTransform((pe_params_pos*)params,trans,scale);	
@@ -137,6 +141,27 @@ PhysXEnt* PhysXEnt::AddToScene(bool fromList)
 	Enable(!(m_mask & 1<<5));
 	_InterlockedAnd((volatile long*)&m_mask, ~(1u<<31 | 1<<5));
 	return next;
+}
+
+
+void PhysXEnt::InterpolateAndMove(float delta)
+{
+	if (!m_prevPose.IsIdentity())
+	{
+		m_lerpPose.t.SetLerp(m_prevPose.t, m_currentPose.t, delta);
+		m_lerpPose.q.SetSlerp(m_prevPose.q, m_currentPose.q, delta);
+		IEntity* ent = (IEntity*)m_pForeignData;
+		ent->SetPosRotScale(m_lerpPose.t, m_lerpPose.q, ent->GetScale());
+	}
+}
+
+void PhysXEnt::RestoreCurrentPose()
+{
+	if (!m_currentPose.IsIdentity())
+	{
+		setGlobalPose(m_currentPose);
+		m_prevPose = m_currentPose;
+	}
 }
 
 void PhysXEnt::DrawHelperInformation(IPhysRenderer *pRenderer, int iDrawHelpers)

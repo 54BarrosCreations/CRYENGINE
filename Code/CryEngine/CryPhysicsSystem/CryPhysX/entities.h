@@ -74,6 +74,8 @@ public:
 	virtual int RefineRayHit(const Vec3& rayOrg, const Vec3& rayDir, Vec3 &pt, Vec3 &n, int partid) const { return partid; }
 	void MarkForAdd();
 	PhysXEnt* AddToScene(bool fromList=false);
+	void InterpolateAndMove(const float delta);
+	void RestoreCurrentPose();
 
 	virtual void DrawHelperInformation(IPhysRenderer *pRenderer, int iDrawHelpers);
 
@@ -100,6 +102,9 @@ public:
 	volatile uint m_mask = 0;	
 	std::set<PxD6Joint*,comp_userDataPtr<PxD6Joint>> m_constraints;
 	static class PhysXWorld *g_pPhysWorld;
+	QuatT m_prevPose;
+	QuatT m_currentPose;
+	QuatT m_lerpPose;
 };
 
 
